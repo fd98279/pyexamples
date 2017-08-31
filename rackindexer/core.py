@@ -1,22 +1,50 @@
-import os
+import os,re
 
-def parser(object):
-	
-	def get_filepaths(self, directory):
+class parser(object):
+	def parse_blob(self, blob):
 		"""
-		This function will generate the file names in a directory 
-		tree by walking the tree either top-down or bottom-up. For each 
-		directory in the tree rooted at directory top (including top itself), 
-		it yields a 3-tuple (dirpath, dirnames, filenames).
+		Description: Parses the given blob data
+		Raises: Exception: Blob empty
+		Returns: Parsed tokenized words from the blob
 		"""
-		file_paths = []  # List which will store all of the full filepaths.
+		if not blob:
+			raise Exception("Blob empty: %s"(blob))
+		print(re.compile("([\w][\w]*'?\w?)").findall(blob))
 
-		# Walk the tree.
+	def parse_dir(self, directory):
+		"""
+		Description: Parses all blob data in the files in 
+			given directory
+		Raises: Exception: Directory not found
+		Returns: Parsed tokenized words from blobs from all 
+			the files in the given directory
+		"""
+		if not (directory or os.path.exists(directory)):
+			raise Exception("Directory not found: %s"(directory))
+		print(directory)
+		self.parse_files(self.get_filepaths(directory))
+
+	def parse_files(self, files):
+		"""
+		Description: Parses all blob data in the given files
+		Raises: Exception: Files not found
+		Returns: Parsed tokenized words from blobs from all 
+			the given files
+		"""
+		if not (files or all([os.path.exists(f) for f in files])):
+			raise Exception("Files not found: %s"(str(files)))
+		for f in files:
+			with open(f) as f:
+				[self.parse_blob(x.strip()) for x in f.readlines()]
+		
+	def _get_filepaths(self, directory):
+		"""
+		Description: Get all the files in the given directory
+		"""
+		file_paths = []
 		for root, directories, files in os.walk(directory):
 			for filename in files:
-				# Join the two strings in order to form the full filepath.
 				filepath = os.path.join(root, filename)
-				file_paths.append(filepath)  # Add it to the list.
-
-		return file_paths  # Self-explanatory.
+				file_paths.append(filepath)
+		return file_paths
 
