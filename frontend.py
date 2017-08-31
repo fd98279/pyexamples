@@ -24,7 +24,8 @@ if __name__ == '__main__':
                             help='Comma separated filenames with full path')    
     args = parser.parse_args()
     
-    parser = core.parser(logger)
+    parser = core.parser(logger, special_chars_to_remove = ['_'])
+    
     if args.data:
         parser.parse_blob(args.data.pop())
     if args.files:

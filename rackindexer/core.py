@@ -57,7 +57,8 @@ class parser(object):
 	"""
 	Description: Class to parse the blobs 
 	"""
-	def __init__(self, logger, custom_regex = None):
+	def __init__(self, logger, custom_regex = None, special_chars_to_remove = 
+				[]):
 		# {'a': word_tracker() ... 'z': word_tracker()}
 		# Create a word_tracker class for each letter
 		self.cache = dict(pair for d in 
@@ -66,8 +67,14 @@ class parser(object):
 						map(chr,range(ord('a'),ord('z')+1))]]  
 						for pair in d.items())
 		self.ingored_words = []
+		# [\w]:  Match Word 
+		# [\w]*: Match 1-More Word
+		# '?:    Match 0 or 1 '
+		# \w?:   Match 0 or 1 Word
+		# Tested at: http://regexr.com/
 		self.regex = custom_regex or "([\w][\w]*'?\w?)"
 		self.logger = logger
+		self.special_chars_to_remove = special_chars_to_remove
 		
 	def _update_cache(self, word):
 		"""
@@ -111,6 +118,11 @@ class parser(object):
 		"""
 		if not blob:
 			raise Exception("Blob empty: %s"(blob))
+		
+		#Handle any special characters
+		for char in self.special_chars_to_remove:
+			blob = blob.replace(char, " ")
+		
 		words = re.compile(self.regex).findall(blob)
 		self.logger.debug("Word parsed by regex: %s"%str(words))
 		#Words are case insensitive.
