@@ -7,6 +7,7 @@
 
 ## To install python 3.5 on Ubuntu:
 	1. Ubuntu 16.04 has python3.5 installed by default:
+	
 	```
 	vagrant@vagrant:/tmp/pyexample$ dpkg -s python3.5
 	Package: python3.5
@@ -79,3 +80,29 @@
 	2 - Count: 3192 Words: ['as']
 	1 - Count: 3082 Words: ['which']
 	```
+
+## To run pytest command. Use tox command
+```
+ - vagrant@vagrant:/tmp/pyexample$ tox
+ 	```
+	GLOB sdist-make: /tmp/pyexample/setup.py
+	py35 inst-nodeps: /tmp/pyexample/.tox/dist/PyLexer-1.0.zip
+	py35 installed: py==1.4.34,PyLexer==1.0,pytest==3.2.1
+	py35 runtests: PYTHONHASHSEED='3010884220'
+	py35 runtests: commands[0] | pytest
+	========================================================= test session starts =========================================================
+	platform linux -- Python 3.5.2, pytest-3.2.1, py-1.4.34, pluggy-0.4.0
+	rootdir: /tmp/pyexample, inifile:
+	collected 2 items
+	
+	test_core.py ..
+	
+	====================================================== 2 passed in 0.15 seconds =======================================================
+	_______________________________________________________________ summary _______________________________________________________________
+	  py35: commands succeeded
+	  congratulations :)
+	vagrant@vagrant:/tmp/pyexample$
+	```
+```
+	
+	
