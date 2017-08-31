@@ -5,6 +5,14 @@ Created on Aug 30, 2017
 '''
 from rackindexer import core
 import argparse
+import logging.config
+import os.path
+print(os.path.dirname(__file__))
+LOGGING_CONF=os.path.join(os.path.dirname(__file__),
+                          "logging_config.ini")
+logging.config.fileConfig(LOGGING_CONF)
+logger = logging.getLogger()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='frontend.py', usage='%(prog)s [--data blob] [--directory full_directory_path] [--files comma_separted_full_file_paths] ')
@@ -16,7 +24,7 @@ if __name__ == '__main__':
                             help='Comma separated filenames with full path')    
     args = parser.parse_args()
     
-    parser = core.parser()
+    parser = core.parser(logger)
     if args.data:
         parser.parse_blob(args.data.pop())
     

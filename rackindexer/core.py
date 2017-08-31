@@ -1,10 +1,15 @@
-import itertools,logging,os,re
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-logger = logging.getLogger('core')
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-logger.addHandler(consoleHandler)
-logger.setLevel(logging.DEBUG)
+import itertools,os,re
+
+"""
+	To test purpose we have set logger in the module.
+	In production scenario log to a file instead of console
+"""
+#logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+#logger = logging.getLogger('core')
+#consoleHandler = logging.StreamHandler()
+#consoleHandler.setFormatter(logFormatter)
+#logger.addHandler(consoleHandler)
+#logger.setLevel(logging.DEBUG)
 
 class word_tracker(object):
 	"""
@@ -94,8 +99,7 @@ class parser(object):
 	"""
 	Description: Class to parse the blobs 
 	"""
-	
-	def __init__(self, custom_regex = None):
+	def __init__(self, logger, custom_regex = None):
 		#{'a': word_tracker() ... 'z': word_tracker()}
 		self.cache = dict(pair for d in 
 						[{y: None} for y in 
@@ -104,6 +108,7 @@ class parser(object):
 						for pair in d.items())
 		self.ingored_words = []
 		self.regex = custom_regex or "([\w][\w]*'?\w?)"
+		self.logger = logger
 		
 	def get_cache(self):
 		"""
@@ -155,7 +160,7 @@ class parser(object):
 		if not blob:
 			raise Exception("Blob empty: %s"(blob))
 		words = re.compile(self.regex).findall(blob)
-		logger.debug("Word parsed by regex: %s"%str(words))
+		self.logger.debug("Word parsed by regex: %s"%str(words))
 		#Words are case insensitive.
 		for word in words:
 			self._update_cache(word)
