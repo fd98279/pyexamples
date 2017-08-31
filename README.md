@@ -107,4 +107,9 @@
 	```
 ```
 	
-	
+## To run concurrently either on same host/distributed hosts
+	- Celery (Workers) + RabbitMQ could be a good solution.
+	- Schedule a chunk of file/per file on different celery worker and consolidate the results
+
+
+ 	
