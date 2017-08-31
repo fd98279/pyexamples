@@ -1,4 +1,6 @@
 import itertools,os,re
+import sys
+import codecs
 
 """
 	To test purpose we have set logger in the module.
@@ -13,19 +15,28 @@ import itertools,os,re
 
 class word_tracker(object):
 	"""
-	Description: Class to track word count and other stats 
+	Description: Tracks word count for words starting with the same letter
+		For letters with hot spots (some letters have more words than other 
+		letters: for e.g a vs z we can further enhance this word tracker 
+		logic for letters with hot spots. 
+		Right now all words are tracked similar.
 	"""
 	
 	def __init__(self, word):
+		# Cache count and occurrence for each letter
 		self.cache = {word: {
-				'count': 1,
-				'occurrence': [word]
+				'count': 1, # Count 
+				'occurrence': [word] # List of letters with the same count
 			}} 
 		self.count_to_word_dict = {1: [word]}
-		self.min_count = 1
-		self.max_count = 1
+		self.min_count = 1 # for words starting with this letter min count
+		self.max_count = 1 # for words starting with this letter max count
 		
 	def _update_count_to_word(self, word, current_count = 0, new_count = 1):
+		"""
+		Description: Updates min and max count for each word  
+		"""
+		
 		if current_count > 0:
 			self.count_to_word_dict[current_count].remove(word)
 		word_count = self.count_to_word_dict.get(new_count)
@@ -36,6 +47,9 @@ class word_tracker(object):
 		self.max_count = max(self.max_count, new_count)
 		
 	def update_tracker(self, word):
+		"""
+		Description: Updates cache for the words starting with this letter  
+		"""
 		word_cache = self.cache.get(word)
 		if word_cache:
 			self._update_count_to_word(word, word_cache['count'], 
@@ -52,55 +66,13 @@ class word_tracker(object):
 	def get_word_count(self):
 		return sorted(self.count_to_word_dict.keys, reverse=True)
 		
-class stats_reporter(object):
-	"""
-	Description: Class to report the top word count stats 
-	"""
-	
-	def __init__(self, parser, no_of_top_words = 10, verbose = False):
-		self.parse = parser
-		self.no_of_top_words = no_of_top_words
-		self.verbose = verbose
-		
-	def print_report(self):
-		# Sort in descending order. Do not return empty word_trackers.
-		word_trackers = [x for x in sorted(self.parse.cache.values(), 
-							key=lambda x: 
-							x.max_count if x else 0, 
-							reverse=True) if x]
-		if word_trackers:
-			for word_count in [y for y in 
-							itertools.islice([x for x in 
-											range(word_trackers[0].max_count
-											,0,-1)], 
-											self.no_of_top_words)]:
-				for word_tracker in word_trackers:
-					word_with_count = word_tracker.count_to_word_dict.get(word_count)
-					if word_with_count:
-						print ("Count: %s Words: %s"%(word_count, 
-													word_with_count))
-			#print("Top %s word:"%(self.no_of_top_words))
-			#for w_t in itertools.islice(word_trackers, self.no_of_top_words):
-			#	if w_t.occurence:
-			#		if self.verbose:
-			#			print("Word: %s Count: %s : Occurrences: %s"
-			#				%(w_t.occurence[0],w_t.count,w_t.occurence))
-			#		else:
-			#			print("Word: %s Count: %s"%(w_t.occurence[0],
-			#														w_t.count))
-			#	else:
-			#		print("Word: %s Count: %s : Occurrences: %s"
-			#				%("Unknown",w_t.count,w_t.occurence))					
-		else:
-			print("No words found...")
-		print("Ignored words %s"%(str(self.parse.ingored_words)))
-			
 class parser(object):
 	"""
 	Description: Class to parse the blobs 
 	"""
 	def __init__(self, logger, custom_regex = None):
-		#{'a': word_tracker() ... 'z': word_tracker()}
+		# {'a': word_tracker() ... 'z': word_tracker()}
+		# Create a word_tracker class for each letter
 		self.cache = dict(pair for d in 
 						[{y: None} for y in 
 						[x for x in 
@@ -109,13 +81,6 @@ class parser(object):
 		self.ingored_words = []
 		self.regex = custom_regex or "([\w][\w]*'?\w?)"
 		self.logger = logger
-		
-	def get_cache(self):
-		"""
-		Description: Return word cache
-		Returns: Returns word cache 
-		"""
-		return self.cache
 		
 	def _update_cache(self, word):
 		"""
@@ -187,8 +152,8 @@ class parser(object):
 		if not (files or all([os.path.exists(f) for f in files])):
 			raise Exception("Files not found: %s"(str(files)))
 		for f in files:
-			with open(f) as f:
-				[self.parse_blob(x.strip()) for x in f.readlines()]
+			with open(f, encoding="utf8") as f:
+				[self.parse_blob(x.strip()) for x in f.readlines() if x.strip()]
 		
 	def _get_filepaths(self, directory):
 		"""
@@ -201,3 +166,47 @@ class parser(object):
 				file_paths.append(filepath)
 		return file_paths
 
+class stats_reporter(object):
+	"""
+	Description: Report words with top count 
+	"""
+	
+	def __init__(self, parser, no_of_top_words = 10, verbose = False):
+		self.parse = parser
+		self.no_of_top_words = no_of_top_words
+		self.verbose = verbose
+		
+	def print_report(self):
+		# Sort all word_trackers in a descending order of max count
+		# There are 26 word_trackers for each letter a..z
+		# Some word_trackers could be empty, i.e no words starting with 
+		# that letter
+		print("Top %s word..."%(self.no_of_top_words))		
+		word_trackers = [x for x in sorted(self.parse.cache.values(), 
+							key=lambda x: 
+							x.max_count if x else 0, 
+							reverse=True) if x]
+		if word_trackers:
+			# Get an iterator from the highest max_count of all word trackers
+			# to 0 
+			_no_of_top_words = self.no_of_top_words 
+			for word_count in [x for x in range(word_trackers[0].max_count
+											,0,-1)]:
+				# Break the loop if we have printed required number of words
+				if _no_of_top_words == 0:
+					break;
+				# Go through each word tracker and print the words 
+				# matching the count
+				for word_tracker in word_trackers:
+					word_with_count = word_tracker.count_to_word_dict.get(
+						word_count)
+					if word_with_count:
+						print ("%s - Count: %s Words: %s"%(_no_of_top_words,
+														word_count, 
+													word_with_count))
+						_no_of_top_words = _no_of_top_words - 1
+		else:
+			print("No words found...")
+					
+		print("Ignored words %s"%(str(self.parse.ingored_words).encode('ascii',
+																	 'ignore')))
