@@ -1,17 +1,4 @@
 import itertools,os,re
-import sys
-import codecs
-
-"""
-	To test purpose we have set logger in the module.
-	In production scenario log to a file instead of console
-"""
-#logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-#logger = logging.getLogger('core')
-#consoleHandler = logging.StreamHandler()
-#consoleHandler.setFormatter(logFormatter)
-#logger.addHandler(consoleHandler)
-#logger.setLevel(logging.DEBUG)
 
 class word_tracker(object):
 	"""
@@ -140,7 +127,7 @@ class parser(object):
 		"""
 		if not (directory or os.path.exists(directory)):
 			raise Exception("Directory not found: %s"(directory))
-		self.parse_files(self.get_filepaths(directory))
+		self.parse_files(self._get_filepaths(directory))
 
 	def parse_files(self, files):
 		"""
@@ -164,6 +151,8 @@ class parser(object):
 			for filename in files:
 				filepath = os.path.join(root, filename)
 				file_paths.append(filepath)
+		self.logger.debug("Processing files in the directory: %s"%str(
+			file_paths))				
 		return file_paths
 
 class stats_reporter(object):
@@ -171,17 +160,17 @@ class stats_reporter(object):
 	Description: Report words with top count 
 	"""
 	
-	def __init__(self, parser, no_of_top_words = 10, verbose = False):
+	def __init__(self, parser, logger, no_of_top_words = 10):
 		self.parse = parser
 		self.no_of_top_words = no_of_top_words
-		self.verbose = verbose
+		self.logger = logger
 		
 	def print_report(self):
 		# Sort all word_trackers in a descending order of max count
 		# There are 26 word_trackers for each letter a..z
 		# Some word_trackers could be empty, i.e no words starting with 
 		# that letter
-		print("Top %s word..."%(self.no_of_top_words))		
+		print("Top %s words..."%(self.no_of_top_words))		
 		word_trackers = [x for x in sorted(self.parse.cache.values(), 
 							key=lambda x: 
 							x.max_count if x else 0, 
@@ -208,5 +197,5 @@ class stats_reporter(object):
 		else:
 			print("No words found...")
 					
-		print("Ignored words %s"%(str(self.parse.ingored_words).encode('ascii',
-																	 'ignore')))
+		self.logger.debug("Ignored words %s"%(
+			str(self.parse.ingored_words).encode('ascii','ignore')))

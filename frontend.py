@@ -29,6 +29,8 @@ if __name__ == '__main__':
         parser.parse_blob(args.data.pop())
     if args.files:
         parser.parse_files(args.files.pop().split(","))
+    if args.dir:
+        parser.parse_dir(args.dir.pop())
     
-    reporter = core.stats_reporter(parser)
+    reporter = core.stats_reporter(parser, logger)
     reporter.print_report()
