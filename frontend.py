@@ -16,7 +16,9 @@ if __name__ == '__main__':
                             help='Comma separated filenames with full path')    
     args = parser.parse_args()
     
-    parse = core.parser()
+    parser = core.parser()
     if args.data:
-        parse.parse_blob(args.data.pop())
-    #print(args.data, args.dir, args.files)    
+        parser.parse_blob(args.data.pop())
+    
+    reporter = core.stats_reporter(parser)
+    reporter.print_report()
