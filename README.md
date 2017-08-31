@@ -47,6 +47,7 @@
 	```
 	
 #### Provide a filename downloaded from http://www.gutenberg.org/
+##### PLEASE NOTE: Repo already contains a file: 55458-0.txt
 	- C:\temp\pyexamples>C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe frontend.py --files "C:\temp\pyexamples\55458-0.txt"
 	- vagrant@vagrant:/tmp/pyexample$ python3.5 frontend.py --files "/tmp/pyexample/55458-0.txt"
 	```	
@@ -65,6 +66,7 @@
 
 #### Provide directory with the files downloaded from http://www.gutenberg.org/
 ##### PLEASE NOTE: NO TRAILING SPACE IN THE DIRECTORY PATH
+##### PLEASE NOTE: Repo already contains a directory with sample files: data
 	- C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe frontend.py --dir "C:\\temp\pyexamples\data"
 	- vagrant@vagrant:/tmp/pyexample$ python3.5 frontend.py --dir "/tmp/pyexample/data"
 	```
