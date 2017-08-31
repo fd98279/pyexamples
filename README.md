@@ -1,33 +1,21 @@
-#Tested using Python3.5.
-To install python 3.5 on windows:
-	Install this .exe: https://www.python.org/ftp/python/3.5.2/python-3.5.2-amd64.exe
-	Python3.5 will be availabe at: C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe
-	Uninstall Python3.5 after testing.
+# Tested using Python3.5.
 
+## To install python 3.5 on Windows:
+Install this .exe: https://www.python.org/ftp/python/3.5.2/python-3.5.2-amd64.exe
+Python3.5 will be availabe at: C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe
+Uninstall Python3.5 after testing.
+
+## To install python 3.5 on Ubuntu:
 Ubuntu 16.04 has python3.5 installed by default:
 vagrant@vagrant:/tmp/pyexample$ dpkg -s python3.5
 	Package: python3.5
 	Status: install ok installed
-	Priority: optional
-	Section: python
-	Installed-Size: 301
-	Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-	Architecture: amd64
-	Multi-Arch: allowed
-	Version: 3.5.2-2ubuntu0~16.04.1
-	Depends: python3.5-minimal (= 3.5.2-2ubuntu0~16.04.1), libpython3.5-stdlib (= 3.5.2-2ubuntu0~16.04.1), mime-support
-	Suggests: python3.5-venv, python3.5-doc, binutils
-	Description: Interactive high-level object-oriented language (version 3.5)
-	 Python is a high-level, interactive, object-oriented language. Its 3.5 version
-	 includes an extensive class library with lots of goodies for
-	 network programming, system administration, sounds and graphics.
-	Original-Maintainer: Matthias Klose <doko@debian.org>
 vagrant@vagrant:/tmp/pyexample$ which python3.5
 /usr/bin/python3.5
 
-To run the application:
-Windows & Ubutu commands provided:
-#Provide a blob 
+## To run the application:
+### Windows & Ubutu commands provided:
+#### Provide a blob 
 C:\temp\pyexamples>C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe frontend.py --data "hello|world|123"
 vagrant@vagrant:/tmp/pyexample$python3.5 frontend.py --data "hello|world|123"
 Top 10 words...
@@ -48,7 +36,7 @@ Top 10 words...
 2 - Count: 1 Words: ["world's", 'workd']
 1 - Count: 1 Words: ['carzy']
 
-#Provide a filename downloaded from http://www.gutenberg.org/
+#### Provide a filename downloaded from http://www.gutenberg.org/
 C:\temp\pyexamples>C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe frontend.py --files "C:\temp\pyexamples\55458-0.txt"
 vagrant@vagrant:/tmp/pyexample$ python3.5 frontend.py --files "/tmp/pyexample/55458-0.txt"
 Top 10 words...
@@ -64,8 +52,8 @@ Top 10 words...
 1 - Count: 406 Words: ['is']
 
 
-#Provide directory with the files downloaded from http://www.gutenberg.org/
-# PLEASE NOTE NO TRAILING SPACE IN THE DIRECTORY PATH
+#### Provide directory with the files downloaded from http://www.gutenberg.org/
+##### PLEASE NOTE: NO TRAILING SPACE IN THE DIRECTORY PATH
 C:\Users\admin\AppData\Local\Programs\Python\Python35\python.exe frontend.py --dir "C:\\temp\pyexamples\data"
 vagrant@vagrant:/tmp/pyexample$ python3.5 frontend.py --dir "/tmp/pyexample/data"
 Top 10 words...
