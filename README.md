@@ -81,7 +81,7 @@
 	1 - Count: 3082 Words: ['which']
 	```
 
-## To run pytest command. Use tox command
+## To run pytest unittests. Use tox command
 ```
  - vagrant@vagrant:/tmp/pyexample$ tox
  	```
