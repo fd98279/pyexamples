@@ -1,4 +1,4 @@
-# Tested using Python3.5.
+## Tested using Python3.5.
 
 ## To install python 3.5 on Windows:
 	1. Install this .exe: https://www.python.org/ftp/python/3.5.2/python-3.5.2-amd64.exe
